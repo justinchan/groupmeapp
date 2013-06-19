@@ -12,9 +12,16 @@ class RootController < ApplicationController
 					a = ActiveSupport::JSON.decode(post_args)
 					resp, data = Net::HTTP.post_form(url, a)
 				end
-			elsif text["specialties"] != nil
+			elsif text == 'kanye weather'
+				url = URI.parse('https://api.forecast.io/forecast/e9ae28050324270567556f2425a62c3f/37.6933,-121.9241?exclude=[minutely,hourly,daily,alerts,flags]')
+				resp_unparsed = Net::HTTP.get_response(url)
+				resp = JSON.parse resp_unparsed.body
+				current_weather = resp["currently"]
+				temp = current_weather["temperature"]
+				summary = current_weather["summary"]
+				summary.downcase!
+				post_args = {"bot_id" => 'ef2a6aea6ec1d4d06d7727cbe9', "text" => "#{temp} degrees outside - #{summary}."}.to_json
 				url = URI.parse('https://api.groupme.com/v3/bots/post')
-				post_args = {"bot_id" => 'ef2a6aea6ec1d4d06d7727cbe9', "text" => "Kanye approves of your choice of place to eat."}.to_json
 				a = ActiveSupport::JSON.decode(post_args)
 				resp, data = Net::HTTP.post_form(url, a)
 			end
