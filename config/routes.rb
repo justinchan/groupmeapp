@@ -13,6 +13,9 @@ Groupme::Application.routes.draw do
   # Sample resource route (maps HTTP verbs to controller actions automatically):
   #   resources :products
 
+  match 'manual' => 'manual#index', :via=>:get
+  match 'manual' => 'manual#post', :via=>:post
+
   # Sample resource route with options:
   #   resources :products do
   #     member do
