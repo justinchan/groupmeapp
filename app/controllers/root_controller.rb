@@ -1,9 +1,9 @@
 class RootController < ApplicationController
 
 	def index
-		# require 'net/http'
-		# require 'json'
-		# text = params[:text].downcase
+		require 'net/http'
+		require 'json'
+		text = params[:text].downcase
 		if params[:name] != 'Kanye'
 		# 	if text["hot tub"] != nil
 		# 		if text.split(" ").include?('hot') and text.split(" ").include?('tub')
