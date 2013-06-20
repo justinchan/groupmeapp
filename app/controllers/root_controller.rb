@@ -4,7 +4,7 @@ class RootController < ApplicationController
 		# require 'net/http'
 		# require 'json'
 		# text = params[:text].downcase
-		# if params[:name] != 'Kanye'
+		if params[:name] != 'Kanye'
 		# 	if text["hot tub"] != nil
 		# 		if text.split(" ").include?('hot') and text.split(" ").include?('tub')
 		# 			url = URI.parse('https://api.groupme.com/v3/bots/post')
@@ -40,7 +40,7 @@ class RootController < ApplicationController
 		# 		a = ActiveSupport::JSON.decode(post_args)
 		# 		resp, data = Net::HTTP.post_form(url, a)
 		# 	end
-		# end
+		end
 	end
 
 end
