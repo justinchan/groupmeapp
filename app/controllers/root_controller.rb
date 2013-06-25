@@ -21,7 +21,7 @@ class RootController < ApplicationController
 				if temp < 60
 					message = "it's colder than the reception I got after the VMAs!"
 				elsif temp >= 60 and temp < 75
-					message = "the weather is fine, just like me. Kanye is so fine."
+					message = "the weather is fine, just like me."
 				else
 					message = "DAMNN IT'S HOT OUTSIDE!"
 				end
@@ -35,6 +35,50 @@ class RootController < ApplicationController
 				system "rake tabulate &"
 				url = URI.parse('https://api.groupme.com/v3/bots/post')
 				post_args = {"bot_id" => 'ef2a6aea6ec1d4d06d7727cbe9', "text" => "Tabulating results..."}.to_json
+				a = ActiveSupport::JSON.decode(post_args)
+				resp, data = Net::HTTP.post_form(url, a)
+			elsif text.split(" ").length >= 3 and text.split(" ").first == "kanye" and text.split(" ")[1] == "review" and params[:name] == "Justin Chan"
+				total_len = text.split(" ").length
+				movie_title = params[:text].split(" ")[2, total_len]
+				real_movie_title = ""
+				changed_title = ""
+				movie_title_len_mod = movie_title.length-1
+				for i in 0..movie_title_len_mod
+					if i == movie_title_len_mod
+						changed_title << movie_title[i]
+						real_movie_title << movie_title[i]
+					else
+						changed_title << "#{movie_title[i]}&"
+						real_movie_title << "#{movie_title[i]} "
+					end
+				end
+				url = URI.parse("http://api.rottentomatoes.com/api/public/v1.0/movies.json?apikey=vzfnz8223sf79wn5x5f8bxa9&page_limit=10&q=#{changed_title}")
+				resp_unparsed = Net::HTTP.get_response(url)
+				resp = JSON.parse resp_unparsed.body
+				movies = resp["movies"]
+				movie_rating = ""
+				movie_id = ""
+				movie_consensus = ""
+				movie_title_forreal = ""
+				movies.each do |movie|
+					if movie["title"].downcase == real_movie_title.downcase
+						movie_id = movie["id"]
+						movie_rating = movie["ratings"]["critics_score"]
+						movie_consensus = movie["critics_consensus"]
+						movie_title_forreal = movie["title"]
+					end
+				end
+
+				test_output = "http://api.rottentomatoes.com/api/public/v1.0/movies.json?apikey=vzfnz8223sf79wn5x5f8bxa9&page_limit=10&q=#{changed_title}"
+
+
+
+				url = URI.parse('https://api.groupme.com/v3/bots/post')
+				if movie_title_forreal.blank?
+					post_args = {"bot_id" => 'ef2a6aea6ec1d4d06d7727cbe9', "text" => "Sorry, I couldn't find anything on the movie."}.to_json
+				else
+					post_args = {"bot_id" => 'ef2a6aea6ec1d4d06d7727cbe9', "text" => "No problem. According to Rotten Tomatoes, #{movie_title_forreal} got a rating of #{movie_rating}%. #{movie_consensus}"}.to_json
+				end
 				a = ActiveSupport::JSON.decode(post_args)
 				resp, data = Net::HTTP.post_form(url, a)
 			end
