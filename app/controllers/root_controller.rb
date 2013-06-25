@@ -81,6 +81,7 @@ class RootController < ApplicationController
 				end
 				a = ActiveSupport::JSON.decode(post_args)
 				resp, data = Net::HTTP.post_form(url, a)
+				
 			end
 		# 	elsif text["thanks kanye"] != nil
 		# 		first_name_temp = params[:name]
