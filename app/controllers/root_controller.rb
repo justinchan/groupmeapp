@@ -81,7 +81,33 @@ class RootController < ApplicationController
 				end
 				a = ActiveSupport::JSON.decode(post_args)
 				resp, data = Net::HTTP.post_form(url, a)
-				
+			elsif text == 'kanye next train to sf'
+				#insert stuff here
+				times = ""
+				url = URI.parse("http://api.bart.gov/api/etd.aspx?cmd=etd&orig=wdub&key=MW9S-E7SL-26DU-VV8V&dir=s")
+				resp_temp = Net::HTTP.get_response(url).body
+				xml_data = REXML::Document.new(resp_temp)
+				leaving_times = []
+				xml_data.elements.each('root/station/etd/estimate/minutes') do |time| 
+					leaving_times << time.text
+				end
+				leaving_times_length = leaving_times.length
+				if leaving_times_length == 1
+					times = "#{leaving_times[0]}"
+				else
+					for i in 0..leaving_times.length-1
+						if i == leaving_times.length-1
+							times << "and #{leaving_times[i]}"
+						else
+							times << "#{leaving_times[i]}, "
+						end
+					end
+				end
+
+				url = URI.parse('https://api.groupme.com/v3/bots/post')
+				post_args = {"bot_id" => 'ef2a6aea6ec1d4d06d7727cbe9', "text" => "Trains leaving West Dublin station for San Francisco in #{times} minutes."}.to_json
+				a = ActiveSupport::JSON.decode(post_args)
+				resp, data = Net::HTTP.post_form(url, a)
 			end
 		# 	elsif text["thanks kanye"] != nil
 		# 		first_name_temp = params[:name]
