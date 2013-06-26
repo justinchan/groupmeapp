@@ -3,6 +3,7 @@ class RootController < ApplicationController
 	def index
 		require 'net/http'
 		require 'json'
+		require 'rexml/document'
 		text = params[:text].downcase
 		if params[:name] != 'Kanye'
 		# 	if text["hot tub"] != nil
@@ -108,7 +109,7 @@ class RootController < ApplicationController
 				post_args = {"bot_id" => 'ef2a6aea6ec1d4d06d7727cbe9', "text" => "Trains leaving West Dublin station for San Francisco in #{times} minutes."}.to_json
 				a = ActiveSupport::JSON.decode(post_args)
 				resp, data = Net::HTTP.post_form(url, a)
-				
+
 			end
 		# 	elsif text["thanks kanye"] != nil
 		# 		first_name_temp = params[:name]
