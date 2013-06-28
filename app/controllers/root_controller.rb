@@ -109,7 +109,11 @@ class RootController < ApplicationController
 				post_args = {"bot_id" => 'ef2a6aea6ec1d4d06d7727cbe9', "text" => "Trains leaving West Dublin station for San Francisco in #{times} minutes."}.to_json
 				a = ActiveSupport::JSON.decode(post_args)
 				resp, data = Net::HTTP.post_form(url, a)
-
+			elsif text == 'kanye odds of sonata emailing us about noise complaints' and params[:name] == 'Justin Chan'
+				url = URI.parse('https://api.groupme.com/v3/bots/post')
+				post_args = {"bot_id" => 'ef2a6aea6ec1d4d06d7727cbe9', "text" => "100%. Count it."}.to_json
+				a = ActiveSupport::JSON.decode(post_args)
+				resp, data = Net::HTTP.post_form(url, a)
 			end
 		# 	elsif text["thanks kanye"] != nil
 		# 		first_name_temp = params[:name]
