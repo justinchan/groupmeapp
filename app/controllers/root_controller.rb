@@ -114,6 +114,31 @@ class RootController < ApplicationController
 				post_args = {"bot_id" => 'ef2a6aea6ec1d4d06d7727cbe9', "text" => "100%. Count it."}.to_json
 				a = ActiveSupport::JSON.decode(post_args)
 				resp, data = Net::HTTP.post_form(url, a)
+			elsif /\Akanye did the (a's|giants) win\z/.match(text) != nil
+				team = ""
+				if /\Akanye did the a's win\z/.match(text) != nil
+					team = "oak"
+				elsif /\Akanye did the giants win\z/.match(text) != nil
+					team = "sf"
+				end
+				url = URI.parse("http://partner.mlb.com/partnerxml/gen/news/rss/#{team}.xml")
+				resp_temp = Net::HTTP.get_response(url).body
+				xml_data = REXML::Document.new(resp_temp)
+				xml_data.elements.each('rss/channel/item/description') do |desc| 
+					if /(\d)*-(\d)*.{0,30}(victory|win)/.match(desc.text) != nil
+						url = URI.parse('https://api.groupme.com/v3/bots/post')
+						post_args = {"bot_id" => 'ef2a6aea6ec1d4d06d7727cbe9', "text" => "Yes they did. #{desc.text}"}.to_json
+						a = ActiveSupport::JSON.decode(post_args)
+						resp, data = Net::HTTP.post_form(url, a)
+						break
+					elsif /(\d)*-(\d)*.{0,30}loss/.match(desc.text) != nil
+						url = URI.parse('https://api.groupme.com/v3/bots/post')
+						post_args = {"bot_id" => 'ef2a6aea6ec1d4d06d7727cbe9', "text" => "No they did not. #{desc.text}"}.to_json
+						a = ActiveSupport::JSON.decode(post_args)
+						resp, data = Net::HTTP.post_form(url, a)
+						break
+					end
+				end
 			end
 		# 	elsif text["thanks kanye"] != nil
 		# 		first_name_temp = params[:name]
