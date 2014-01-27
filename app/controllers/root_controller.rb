@@ -133,7 +133,7 @@ class RootController < ApplicationController
 					end
 				end
 			end
-			elsif text["thanks kanye"] != nil
+			elsif text["i miss the summer"] != nil
 				first_name_temp = params[:name]
 				first_name = first_name_temp.split(" ").first
 				url = URI.parse('https://api.groupme.com/v3/bots/post')
