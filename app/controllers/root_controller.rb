@@ -132,7 +132,6 @@ class RootController < ApplicationController
 						break
 					end
 				end
-			end
 			elsif text["i miss the summer"] != nil
 				first_name_temp = params[:name]
 				first_name = first_name_temp.split(" ").first
